@@ -1,0 +1,8 @@
+{
+  "cucumber.features": [
+    "tests/DummyJson.Api.Tests/Features/**/*.feature"
+  ],
+  "cucumber.glue": [
+    "tests/DummyJson.Api.Tests/StepDefinitions/**/*.cs"
+  ]
+}
