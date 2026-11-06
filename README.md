@@ -1,1 +1,1 @@
-# dummy-json-api--qa
+# dummy-json-api-qa
