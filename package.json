@@ -1,0 +1,14 @@
+{
+  "name": "dummy-json-api-reports",
+  "private": true,
+  "description": "Local Allure HTML report tooling for the C# BDD test suite",
+  "scripts": {
+    "allure:clean": "node -e \"require('node:fs').rmSync('artifacts/allure-results', { recursive: true, force: true })\"",
+    "test:bdd": "dotnet test DummyJson.sln --configuration Release --logger \"trx;LogFileName=api-tests.trx\" --logger \"junit;LogFilePath=../../artifacts/test-results/{assembly}-results.xml\" --results-directory artifacts/test-results",
+    "allure:generate": "allure generate artifacts/allure-results --clean --single-file --output artifacts/allure-report",
+    "allure:open": "allure open artifacts/allure-report --host 127.0.0.1 --port 5050"
+  },
+  "devDependencies": {
+    "allure-commandline": "2.46.1"
+  }
+}

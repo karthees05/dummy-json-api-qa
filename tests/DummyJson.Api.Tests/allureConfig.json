@@ -1,0 +1,12 @@
+{
+  "allure": {
+    "directory": "../../../../../artifacts/allure-results",
+    "gherkinPatterns": {
+      "stepArguments": {
+        "createFromDataTables": true,
+        "nameColumn": "Field",
+        "valueColumn": "Value"
+      }
+    }
+  }
+}

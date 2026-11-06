@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+**/TestResults/
+artifacts/
+*.feature.cs
+.vs/
+.idea/
+*.user
+*.suo
+.DS_Store
+.env
+appsettings.local.json
+node_modules/

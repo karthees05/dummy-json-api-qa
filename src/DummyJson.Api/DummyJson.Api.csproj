@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="RestSharp" Version="114.1.0" />
+  </ItemGroup>
+</Project>

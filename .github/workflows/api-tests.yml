@@ -1,0 +1,82 @@
+name: DummyJSON API BDD tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+
+jobs:
+  api-tests:
+    name: API scenarios and Allure report
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install Allure report generator
+        run: npm ci
+      - name: Restore pinned packages
+        run: dotnet restore DummyJson.sln --locked-mode
+      - name: Build
+        run: dotnet build DummyJson.sln --configuration Release --no-restore
+      - name: Run BDD scenarios
+        id: tests
+        run: >-
+          dotnet test DummyJson.sln --configuration Release --no-build
+          --logger "trx;LogFileName=api-tests.trx"
+          --logger "junit;LogFilePath=../../artifacts/test-results/{assembly}-results.xml"
+          --results-directory artifacts/test-results
+      - name: Generate Allure HTML report
+        if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
+        run: npm run allure:generate
+      - name: Upload Allure HTML report
+        id: allure
+        if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-html-report
+          path: artifacts/allure-report/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-results
+          path: |
+            artifacts/test-results/
+            artifacts/allure-results/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Add run summary
+        if: always()
+        env:
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
+          ALLURE_REPORT_URL: ${{ steps.allure.outputs.artifact-url }}
+        run: |
+          {
+            printf '## DummyJSON API tests\n\n'
+            printf 'Scenario execution: **%s**\n\n' "$TEST_OUTCOME"
+            if [ -n "$ALLURE_REPORT_URL" ]; then
+              printf '[Download Allure HTML report](%s)\n\n' "$ALLURE_REPORT_URL"
+              printf 'Extract the downloaded artifact and open `index.html` in your browser.\n'
+            fi
+            printf '\nTRX, JUnit XML and raw Allure results are available in the `api-test-results` artifact.\n'
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "RestSharp": {
+        "type": "Direct",
+        "requested": "[114.1.0, )",
+        "resolved": "114.1.0",
+        "contentHash": "QXpO6o0lKmbzBPhLZ1nBiZj9Vdb/3qRTyo0s0Vllm9HRLzpD2X+I9tkhGE4WWno6WyUkRsVP1jnyvDyQ5SakGg=="
+      }
+    }
+  }
+}
